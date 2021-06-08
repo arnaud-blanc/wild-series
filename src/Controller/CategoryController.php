@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Program;
+use App\Repository\CategoryRepository;
+use App\Repository\ProgramRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -32,13 +34,11 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/{categoryName}", name="show")
+     * @Route("/{categoryName}", methods={"GET"}, name="show")
      */
-    public function show(string $categoryName): Response
+    public function show(string $categoryName, CategoryRepository $categoryRepository, ProgramRepository $programRepository): Response
     {
-        $category = $this->getDoctrine()
-        ->getRepository(Category::class)
-        ->findOneBy(['name' => $categoryName]);
+        $category = $categoryRepository->findOneByName($categoryName);
 
         if ($category === null) {
             throw $this->createNotFoundException(
@@ -46,9 +46,7 @@ class CategoryController extends AbstractController
             );
         }
 
-        $programs = $this->getDoctrine()
-        ->getRepository(Program::class)
-        ->findBy(
+        $programs = $programRepository->findBy(
             ['category' => $category],
             ['id' => 'DESC'],
             3
