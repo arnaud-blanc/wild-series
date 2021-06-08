@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Programs by category
+{% endblock %}
+
+{% block body %}
+    <h1>Les 3 dernières séries de la catégorie concernée</h1>
+    {% for program in programs %}
+        <div>
+            <h2>Série #{{program.id}} : <a href="{{ path("program_show", { id: program.id }) }}">{{program.title}}</a></h2>
+            <p>{{program.summary}}</p>        
+        </div>
+    {% else %}
+        <p>"Aucune série trouvée".</p>
+    {% endfor %}
+{% endblock %}
